@@ -13,7 +13,7 @@
 * [DemoVideo](#demovideo)
 
 ## Introduction
-	This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firefighter is a system which can detect and locate the fire and control the extinguisher to extinguish the fire early. The proposed system uses two Infrared sensor arrays with ARC EM Starter Kit to create a map of the fire which enables it to detect and locate the fire. After that, a control circuit with the robot arm can be used to direct the extinguisher to the direction of the fire. This smart firefighter can reduce the damages to the furniture. AI can be applied as a future work to build a safer firefighter by identifying the type of fire and selecting the correct extinguisher.
+This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firefighter is a system which can detect and locate the fire and control the extinguisher to extinguish the fire early. The proposed system uses two Infrared sensor arrays with ARC EM Starter Kit to create a map of the fire which enables it to detect and locate the fire. After that, a control circuit with the robot arm can be used to direct the extinguisher to the direction of the fire. This smart firefighter can reduce the damages to the furniture. AI can be applied as a future work to build a safer firefighter by identifying the type of fire and selecting the correct extinguisher.
 
 ### Function
 - Quick and accurate detection of flame location.
@@ -22,7 +22,7 @@
 - Can be mobility.
 
 ### System Architecture
-![image](https://github.com/Mandywualmighty/Auto-following-Suitcase-Application/blob/master/doc/screenshots/Temperature%20and%20PM2.5%20monitoring.png   "System Architecture")
+![image](https://github.com/mrninhvn/-2019-Synopsys-ARC-Firefighter/blob/master/detailed%20picture/System%20Architecture.png   "System Architecture")
 
 ## Hardware and Software Setup
 ### Required Hardware
