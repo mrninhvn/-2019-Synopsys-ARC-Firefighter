@@ -1,4 +1,4 @@
-# Smart Fire-Fighter Application (Running)
+# Smart Fire-Fighter Application (In Progress)
 
 * [Introduction](#introduction)
 	* [Function](#function)
@@ -101,5 +101,5 @@ Placing the C source file and header file in the corresponding subfolder.
 
 
 # DemoVideo
-
+Updating...
 [40]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
