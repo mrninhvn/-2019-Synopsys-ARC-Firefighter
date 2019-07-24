@@ -1,4 +1,4 @@
-# Smart Fire-Fighter Application
+# Smart Fire-Fighter Application (Running)
 
 * [Introduction](#introduction)
 	* [Function](#function)
@@ -13,13 +13,16 @@
 * [DemoVideo](#demovideo)
 
 ## Introduction
-**Smart Fire-Fighter**
+	This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firefighter is a system which can detect and locate the fire and control the extinguisher to extinguish the fire early. The proposed system uses two Infrared sensor arrays with ARC EM Starter Kit to create a map of the fire which enables it to detect and locate the fire. After that, a control circuit with the robot arm can be used to direct the extinguisher to the direction of the fire. This smart firefighter can reduce the damages to the furniture. AI can be applied as a future work to build a safer firefighter by identifying the type of fire and selecting the correct extinguisher.
 
 ### Function
-
+- Quick and accurate detection of flame location.
+- Detect small size of flame (a candle at 3m).
+- Spray water flow to the fire correctly, while keeping other areas dry spear.
+- Can be mobility.
 
 ### System Architecture
-
+![image](https://github.com/Mandywualmighty/Auto-following-Suitcase-Application/blob/master/doc/screenshots/Temperature%20and%20PM2.5%20monitoring.png   "System Architecture")
 
 ## Hardware and Software Setup
 ### Required Hardware
@@ -37,21 +40,13 @@
 - Serial port terminal, such as putty, tera-term or minicom
 
 ### Hardware Connection
-1.
+1. Testing
    - Connect **2 Stepper driver module** to **J3**.
    - Connect **Relay module** to **J6**.
 2. Configure your EMSKs with proper core configuration.
 
 ## User Manual
 ### Before Running This Application
-Download source code of **Auto-following Suitcase** from github.
-
-The hardware resources are allocated as following table.
-
-|  Hardware Resource  |            Function                                           |
-| ------------------- | ------------------------------------------------------------- |
-|                     |                                                               |
-
 
 - Modify mux.c (/board/emsk/common/emsk_init.c)
 ```
@@ -102,7 +97,6 @@ Placing the C source file and header file in the corresponding subfolder.
 |  folder/file        |            Function           |
 | ------------------- | ------------------------------|
 |  stepper            |       stepper driver          |
-|  ZPH01              |       UART driver             |
 |  pump               |       pump   driver           |
 
 
