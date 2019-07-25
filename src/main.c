@@ -45,12 +45,17 @@ int main(void)
         int_enable(INTNO_TIMER0);
     }
     timer_start(TIMER_0,1,BOARD_CPU_CLOCK/2000);
+
     while (1)
     {
-        stepMotor(1, 1, 2000);
-        board_delay_ms(500,1);
-        stepMotor(1, 0, 2000);
-        board_delay_ms(500,1);
+    	uint16_t *uartBuf;
+    	uartBuf = receive_uart();
+    	for (int i = 0; i < 9; i++)
+		{
+			EMBARC_PRINTF("%d ", *(uartBuf + i));
+		}
+		EMBARC_PRINTF("\n");
+    	delay_us(1000000);
     }
     return E_SYS;   
 }
