@@ -6,7 +6,7 @@
 #include "mathh.h"
 #include <string.h>
 #include "arc.h"
-DEV_UART *dev_uart0 = NULL;
+// DEV_UART *dev_uart0 = NULL;
 
 static void delay_us(volatile int time) //1us
 {
@@ -26,7 +26,6 @@ static void timer0_isr(void *ptr)
 
 int main(void)
 {
-    uint32_t baudrate = 115200; 
     cpu_lock(); 
     board_init();
     int_disable(INTNO_TIMER1);  
@@ -35,9 +34,8 @@ int main(void)
     int_enable(INTNO_TIMER1);
     timer_start(TIMER_1, TIMER_CTRL_IE, BOARD_CPU_CLOCK);
     cpu_unlock();
+    uart0_init();
     uart2_init();
-    dev_uart0 = uart_get_dev(DW_UART_0_ID);
-    dev_uart0->uart_open(baudrate);
     if (timer_present(TIMER_0))
     {
         timer_stop(TIMER_0);
@@ -49,10 +47,19 @@ int main(void)
     while (1)
     {
     	uint16_t *uartBuf;
-    	uartBuf = receive_uart();
-    	for (int i = 0; i < 9; i++)
+    	uartBuf = receive_uart0();
+    	for (int i = 0; i < 8; i++)
 		{
 			EMBARC_PRINTF("%d ", *(uartBuf + i));
+		}
+		EMBARC_PRINTF("\n");
+    	delay_us(1000000);
+
+    	uint16_t *uartBuf1;
+    	uartBuf1 = receive_uart2();
+    	for (int i = 0; i < 8; i++)
+		{
+			EMBARC_PRINTF("%d ", *(uartBuf1 + i));
 		}
 		EMBARC_PRINTF("\n");
     	delay_us(1000000);
