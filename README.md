@@ -16,6 +16,10 @@
 **Smart Fire-Fighter**
 
 ### Function
+- Quick and accurate detection of flame location.
+- Detect small size of flame (a candle at 3m).
+- Spray water flow to the fire correctly, while keeping other areas dry spear.
+- Can be mobility.
 
 
 ### System Architecture
@@ -44,14 +48,7 @@
 
 ## User Manual
 ### Before Running This Application
-Download source code of **Auto-following Suitcase** from github.
-
-The hardware resources are allocated as following table.
-
-|  Hardware Resource  |            Function                                           |
-| ------------------- | ------------------------------------------------------------- |
-|                     |                                                               |
-
+Download source code of from github.                       
 
 - Modify mux.c (/board/emsk/common/emsk_init.c)
 ```
@@ -96,7 +93,7 @@ See [ embARC Example User Guide][40], **"Options to Hard-Code in the Application
 
 #### Driver
 
-Placing the drivers' source code in `driver` folder, you can see there are subfolders for ultasonic,GPRS,ZPH01,buzzer and temperature drivers.
+Placing the drivers' source code in `driver` folder, you can see there are subfolders for pump, mlx9640 and stepper drivers.
 Placing the C source file and header file in the corresponding subfolder.
 
 |  folder/file        |            Function           |
