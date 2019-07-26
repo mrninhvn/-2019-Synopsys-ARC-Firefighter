@@ -1,4 +1,4 @@
-# Smart Fire-Fighter Application (In Progress)
+# Smart Fire-Fighter Application
 
 * [Introduction](#introduction)
 	* [Function](#function)
@@ -13,16 +13,13 @@
 * [DemoVideo](#demovideo)
 
 ## Introduction
-This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firefighter is a system which can detect and locate the fire and control the extinguisher to extinguish the fire early. The proposed system uses two Infrared sensor arrays with ARC EM Starter Kit to create a map of the fire which enables it to detect and locate the fire. After that, a control circuit with the robot arm can be used to direct the extinguisher to the direction of the fire. This smart firefighter can reduce the damages to the furniture. AI can be applied as a future work to build a safer firefighter by identifying the type of fire and selecting the correct extinguisher.
+**Smart Fire-Fighter**
 
 ### Function
-- Quick and accurate detection of flame location.
-- Detect small size of flame (a candle at 3m).
-- Spray water flow to the fire correctly, while keeping other areas dry spear.
-- Can be mobility.
+
 
 ### System Architecture
-![image](https://github.com/mrninhvn/-2019-Synopsys-ARC-Firefighter/blob/master/detailed%20picture/System%20Architecture.png   "System Architecture")
+
 
 ## Hardware and Software Setup
 ### Required Hardware
@@ -40,13 +37,21 @@ This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firef
 - Serial port terminal, such as putty, tera-term or minicom
 
 ### Hardware Connection
-1. Testing
+1.
    - Connect **2 Stepper driver module** to **J3**.
    - Connect **Relay module** to **J6**.
 2. Configure your EMSKs with proper core configuration.
 
 ## User Manual
 ### Before Running This Application
+Download source code of **Auto-following Suitcase** from github.
+
+The hardware resources are allocated as following table.
+
+|  Hardware Resource  |            Function                                           |
+| ------------------- | ------------------------------------------------------------- |
+|                     |                                                               |
+
 
 - Modify mux.c (/board/emsk/common/emsk_init.c)
 ```
@@ -97,8 +102,10 @@ Placing the C source file and header file in the corresponding subfolder.
 |  folder/file        |            Function           |
 | ------------------- | ------------------------------|
 |  stepper            |       stepper driver          |
-|  pump               |       pump   driver           |
+|  mlx9640            |       MLX9640 UART driver     |
+|  pump               |       pump driver             |
 
 
 # DemoVideo
-Updating...
+
+[40]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
