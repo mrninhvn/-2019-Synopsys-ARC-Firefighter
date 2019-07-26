@@ -13,7 +13,7 @@
 * [DemoVideo](#demovideo)
 
 ## Introduction
-**Smart Fire-Fighter**
+This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firefighter is a system which can detect and locate the fire and control the extinguisher to extinguish the fire early. The proposed system uses two Infrared sensor arrays with ARC EM Starter Kit to create a map of the fire which enables it to detect and locate the fire. After that, a control circuit with the robot arm can be used to direct the extinguisher to the direction of the fire. This smart firefighter can reduce the damages to the furniture. AI can be applied as a future work to build a safer firefighter by identifying the type of fire and selecting the correct extinguisher.
 
 ### Function
 - Quick and accurate detection of flame location.
@@ -23,7 +23,7 @@
 
 
 ### System Architecture
-
+![image](https://github.com/mrninhvn/2019-Synopsys-ARC-Firefighter/blob/master/detailed%20picture/system-architecture.png  "System architecture")
 
 ## Hardware and Software Setup
 ### Required Hardware
@@ -43,6 +43,7 @@
 ### Hardware Connection
 1.
    - Connect **2 Stepper driver module** to **J3**.
+   - Connect **2 IR camera module** to **J1** & **J5** (using UART).
    - Connect **Relay module** to **J6**.
 2. Configure your EMSKs with proper core configuration.
 
@@ -104,5 +105,4 @@ Placing the C source file and header file in the corresponding subfolder.
 
 
 # DemoVideo
-
-[40]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
+Updating...
