@@ -23,7 +23,7 @@ This project uses ARC EM Starter Kit to build a smart Firefighter. A smart firef
 
 
 ### System Architecture
-![image](https://github.com/mrninhvn/2019-Synopsys-ARC-Firefighter/blob/master/detailed%20picture/system-architecture.png  "System architecture")
+![image](https://github.com/mrninhvn/2019-Synopsys-ARC-Firefighter/blob/master/detailed%20picture/system.png  "System architecture")
 
 ## Hardware and Software Setup
 ### Required Hardware
