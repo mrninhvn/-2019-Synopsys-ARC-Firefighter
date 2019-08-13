@@ -46,23 +46,24 @@ int main(void)
 
     while (1)
     {
+    	send_uart0();
     	uint16_t *uartBuf;
     	uartBuf = receive_uart0();
-    	for (int i = 0; i < 8; i++)
+    	for (int i = 0; i < 768; i++)
 		{
 			EMBARC_PRINTF("%d ", *(uartBuf + i));
 		}
 		EMBARC_PRINTF("\n");
-    	delay_us(1000000);
+    	delay_us(1500000);
 
-    	uint16_t *uartBuf1;
-    	uartBuf1 = receive_uart2();
-    	for (int i = 0; i < 8; i++)
-		{
-			EMBARC_PRINTF("%d ", *(uartBuf1 + i));
-		}
-		EMBARC_PRINTF("\n");
-    	delay_us(1000000);
+  //   	uint16_t *uartBuf1;
+  //   	uartBuf1 = receive_uart2();
+  //   	for (int i = 0; i < 8; i++)
+		// {
+		// 	EMBARC_PRINTF("%d ", *(uartBuf1 + i));
+		// }
+		// EMBARC_PRINTF("\n");
+  //   	delay_us(1000000);
     }
     return E_SYS;   
 }

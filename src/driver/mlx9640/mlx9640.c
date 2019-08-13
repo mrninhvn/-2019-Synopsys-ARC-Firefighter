@@ -58,7 +58,7 @@ uint16_t * receive_uart1(void)
 
 uint16_t * receive_uart0(void)
 {  
-	static uint16_t rcv_buf_0[9];
+	static uint16_t rcv_buf_0[768];
 	uint32_t rcv_cnt_0;
 	uint32_t baudrate0 = 115200;
 	uint32_t rd_avail_0 = 0;
@@ -68,4 +68,13 @@ uint16_t * receive_uart0(void)
 		rcv_cnt_0 = dev_uart0->uart_read(rcv_buf_0, rd_avail_0);		
 	}
 	return rcv_buf_0;
+}
+
+void send_uart0(void)
+{
+	uart0_init();
+	char send_message[1];
+	send_message[0] = '1';
+	dev_uart0->uart_write(send_message, 1);
+	// EMBARC_PRINTF("%c ", send_message[0]);
 }

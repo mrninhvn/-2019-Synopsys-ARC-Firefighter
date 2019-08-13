@@ -74,6 +74,7 @@ void setup()
 
 void loop()
 {
+  char buffer[2]= {'0', '\0'};
   long startTime = millis();
   for (byte x = 0 ; x < 2 ; x++)
   {
@@ -90,20 +91,20 @@ void loop()
   }
   long stopTime = millis();
 
-  uint8_t irCmd = 0;
-  if (Serial.available() > 0)
+  if (Serial.available() >= 1) 
   {
-    irCmd = Serial.read();
+    Serial.readBytes(buffer,1);
   }
-  while(Serial.available())
+  while (Serial.available()) 
   {
     Serial.read();
   }
-  Serial.println(irCmd);
-//  if (irCmd == 'i')
-//  {
-//    printValue();
-//  }
+//  Serial.println(buffer);
+  
+  if (buffer[0] == '1')
+  {
+    sendValue();
+  }
   
 }
 
@@ -116,7 +117,7 @@ boolean isConnected()
   return (true);
 }
 
-void printValue()
+void sendValue()
 {
   for (int x = 0 ; x < 768 ; x++)
   {
