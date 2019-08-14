@@ -58,7 +58,7 @@ uint16_t * receive_uart1(void)
 
 uint16_t * receive_uart0(void)
 {  
-	static uint16_t rcv_buf_0[768];
+	static uint8_t rcv_buf_0[20];
 	uint32_t rcv_cnt_0;
 	uint32_t baudrate0 = 115200;
 	uint32_t rd_avail_0 = 0;

@@ -35,8 +35,12 @@ const byte MLX90640_address = 0x33; //Default 7-bit unshifted address of the MLX
 
 #define TA_SHIFT 8 //Default shift for MLX90640 in open air
 
+uint16_t eeMLX90640[832];
+uint16_t mlx90640Frame[834];
 float mlx90640To[768];
+uint8_t mlx90640Send[768];
 paramsMLX90640 mlx90640;
+
 
 void setup()
 {
@@ -56,7 +60,6 @@ void setup()
 
   //Get device parameters - We only have to do this once
   int status;
-  uint16_t eeMLX90640[832];
   status = MLX90640_DumpEE(MLX90640_address, eeMLX90640);
   if (status != 0)
     Serial.println("Failed to load system parameters");
@@ -75,10 +78,9 @@ void setup()
 void loop()
 {
   char buffer[2]= {'0', '\0'};
-  long startTime = millis();
+
   for (byte x = 0 ; x < 2 ; x++)
   {
-    uint16_t mlx90640Frame[834];
     int status = MLX90640_GetFrameData(MLX90640_address, mlx90640Frame);
 
     float vdd = MLX90640_GetVdd(mlx90640Frame, &mlx90640);
@@ -89,7 +91,17 @@ void loop()
 
     MLX90640_CalculateTo(mlx90640Frame, &mlx90640, emissivity, tr, mlx90640To);
   }
-  long stopTime = millis();
+  for (int i = 0; i < 768; i++)
+  {
+    if (mlx90640To[i] > 255)
+    {
+      mlx90640Send[i] = 255;
+    }
+    else
+    {
+      mlx90640Send[i] = (uint8_t)mlx90640To[i];
+    }
+  }
 
   if (Serial.available() >= 1) 
   {
@@ -99,11 +111,16 @@ void loop()
   {
     Serial.read();
   }
+
+  Serial.println("");
 //  Serial.println(buffer);
   
   if (buffer[0] == '1')
   {
-    sendValue();
+//    uint8_t test[9] = {1,2,3,4,5,6,7,8};
+//    Serial.write(test, 9);
+    Serial.write(mlx90640Send, 768);
+    Serial.flush();
   }
   
 }
@@ -115,17 +132,6 @@ boolean isConnected()
   if (Wire.endTransmission() != 0)
     return (false); //Sensor did not ACK
   return (true);
-}
-
-void sendValue()
-{
-  for (int x = 0 ; x < 768 ; x++)
-  {
-    //if(x % 8 == 0) Serial.println();
-    Serial.print(mlx90640To[x], 2);
-    Serial.print(",");
-  }
-  Serial.println("");
 }
 
 
