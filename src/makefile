@@ -25,11 +25,11 @@ MID_SEL = common u8glib
 
 
 # application source dirs
-APPL_CSRC_DIR = .  driver/pump driver/stepper
+APPL_CSRC_DIR = .
 APPL_ASMSRC_DIR = .
 
 # application include dirs
-APPL_INC_DIR = .  driver/pump driver/stepper
+APPL_INC_DIR = .
 
 # include current project makefile
 COMMON_COMPILE_PREREQUISITES += makefile
