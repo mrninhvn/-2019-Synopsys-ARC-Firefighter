@@ -18,10 +18,17 @@ void uart0_init(void);
 void uart2_init(void);
 void readSensor1(void);
 void readSensor2(void);
+void flameLocation(void);
 void pumpOn(void);	
 void pumpOff(void);
-void stepMotor(uint8_t number, uint8_t direction, uint32_t step);
-#define stepTime 2000
+void stepMotor(uint8_t number, uint8_t direction, uint32_t step, int stepTime);
+
+uint8_t maxTemper1, xMax1, yMax1;
+int maxTemper2, xMax2, yMax2;
+double alpha1, alpha2;
+double beta2;
+double fx, fy;
+double A = 30;
 
 int main(void)
 {
@@ -45,17 +52,6 @@ int main(void)
 
     while (1)
     {
-
-    	pumpOn();
-    	delay_ms(1000);
-    	pumpOff();
-    	delay_ms(1000);
-    	// readSensor1();
-    	stepMotor(1, 0, 200);
-    	stepMotor(2, 0, 500);
-    	stepMotor(1, 1, 200);
-    	stepMotor(2, 1, 500);
-    	// testPump();
 
     }
     return E_SYS;   
@@ -116,8 +112,40 @@ void readSensor1(void)
 	{
 		rcv_cnt_0 = dev_uart0->uart_read(rcv_buf_0, 768);		
 	}
+
+	maxTemper1 = rcv_buf_0[0];
+	xMax1 = 0; yMax1 = 0;
+	uint8_t count1 = 1;
+
+	for (int i = 0; i < 768; i++)
+	{
+		if (rcv_buf_0[i] == maxTemper1)
+		{
+			count1++;
+			xMax1 = xMax1 + i%32;
+			yMax1 = yMax1 + (int)(i/24);
+		}
+		else if (rcv_buf_0[i] > maxTemper1)
+		{
+			maxTemper1 = rcv_buf_0[i];
+			count1 = 1;
+			xMax1 = i%32;
+			yMax1 = (int)(i/24);
+		}
+	}
+
+	xMax1 = (int)(xMax1/count1);
+	yMax1 = (int)(yMax1/count1);
+
+	// EMBARC_PRINTF("%d ", maxTemper1);
+	// EMBARC_PRINTF("(%d, %d)\n", xMax1, yMax1);
+
 	// for (int i = 0; i < 768; i++)
 	// {
+	// 	if (i%32 == 0)
+	// 	{
+	// 		EMBARC_PRINTF("\n");
+	// 	}
 	// 	EMBARC_PRINTF("%d ", rcv_buf_0[i]);
 	// }
 	// EMBARC_PRINTF("\n\n");
@@ -141,11 +169,53 @@ void readSensor2(void)
 	{
 		rcv_cnt_2 = dev_uart2->uart_read(rcv_buf_2, 768);		
 	}
+
+	maxTemper2 = rcv_buf_2[0];
+	xMax2 = 0; yMax1 = 0;
+	uint8_t count2 = 1;
+
 	for (int i = 0; i < 768; i++)
 	{
-		EMBARC_PRINTF("%d ", rcv_buf_2[i]);
+		if (rcv_buf_2[i] == maxTemper2)
+		{
+			count2++;
+			xMax2 = xMax2 + i%32;
+			yMax2 = yMax2 + (int)(i/24);
+		}
+		else if (rcv_buf_2[i] > maxTemper2)
+		{
+			maxTemper2 = rcv_buf_2[i];
+			count2 = 1;
+			xMax2 = i%32;
+			yMax2 = (int)(i/24);
+		}
 	}
-	EMBARC_PRINTF("\n\n");
+	xMax2 = (int)(xMax2/count2);
+	yMax2 = (int)(yMax2/count2);
+	// EMBARC_PRINTF("%d ", maxTemper2);
+	// EMBARC_PRINTF("(%d, %d)\n", xMax2, yMax2);
+
+	// for (int i = 0; i < 768; i++)
+	// {
+	// 	if (i%32 == 0)
+	// 	{
+	// 		EMBARC_PRINTF("\n");
+	// 	}
+	// 	EMBARC_PRINTF("%d ", rcv_buf_2[i]);
+	// }
+	// EMBARC_PRINTF("\n\n");
+}
+
+void flameLocation(void)
+{
+	alpha1 = PI*(11*(xMax1 - 16)/207360);
+	alpha2 = PI*(11*(xMax2 - 16)/207360);
+	beta2 = PI*(7*(yMax2 - 16)/864);
+
+	double y = (A*tan1(alpha1))/(2*tan1(alpha2));
+	fx = y*tan1(alpha2);
+	double yv = y/(cos1(alpha2));
+	fy = yv*tan1(beta2);
 }
 
 void pumpOn(void)
@@ -168,7 +238,7 @@ void pumpOff(void)
 	port_pump->gpio_write(0x00000000, 0x10000000);
 }
 
-void stepMotor(uint8_t number, uint8_t direction, uint32_t step)
+void stepMotor(uint8_t number, uint8_t direction, uint32_t step, int stepTime)
 {
 	DEV_GPIO_PTR PMOD3_L;
 	PMOD3_L = gpio_get_dev(DW_GPIO_PORT_A);

@@ -92,17 +92,5 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for example to show how to run
 
 See [ embARC Example User Guide][40], **"Options to Hard-Code in the Application Makefile"** for more detailed information about **Makefile Options**.
 
-#### Driver
-
-Placing the drivers' source code in `driver` folder, you can see there are subfolders for pump, mlx9640 and stepper drivers.
-Placing the C source file and header file in the corresponding subfolder.
-
-|  folder/file        |            Function           |
-| ------------------- | ------------------------------|
-|  stepper            |       stepper driver          |
-|  mlx9640            |       MLX9640 UART driver     |
-|  pump               |       pump driver             |
-
-
 # DemoVideo
-Updating....
+https://www.youtube.com/watch?v=aEobmLNDtfw
