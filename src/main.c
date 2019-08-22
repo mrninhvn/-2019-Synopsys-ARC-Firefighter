@@ -19,16 +19,25 @@ void uart2_init(void);
 void readSensor1(void);
 void readSensor2(void);
 void flameLocation(void);
+void moveNozzel(void);
+void home(void);
 void pumpOn(void);	
 void pumpOff(void);
 void stepMotor(uint8_t number, uint8_t direction, uint32_t step, int stepTime);
 
 uint8_t maxTemper1, xMax1, yMax1;
-int maxTemper2, xMax2, yMax2;
-double alpha1, alpha2;
-double beta2;
-double fx, fy;
-double A = 30;
+uint8_t maxTemper2, xMax2, yMax2;
+float alpha1, alpha2;
+float beta2;
+int fx, fy;
+float a1, a2;
+#define A 30
+#define H 60
+#define D 35
+#define Hn 23
+
+int currentStepX = 0;
+int currentStepY = 0;
 
 int main(void)
 {
@@ -52,7 +61,27 @@ int main(void)
 
     while (1)
     {
-
+    	readSensor1();
+    	readSensor2();
+    	flameLocation();
+    	// EMBARC_PRINTF("Sensor 1: %d (%d, %d)\n", maxTemper1, xMax1, yMax1);
+    	// EMBARC_PRINTF("Sensor 2: %d (%d, %d)\n", maxTemper2, xMax2, yMax2);
+    	// EMBARC_PRINTF("alpha1: %d\n", (int)alpha1);
+    	// EMBARC_PRINTF("alpha2: %d\n", (int)alpha2);
+    	// EMBARC_PRINTF("beta2: %d\n", (int)beta2);
+    	// EMBARC_PRINTF("fx: %d\n", fx);
+    	// EMBARC_PRINTF("fy: %d\n", fy);
+    	if (fx == 0 || fy == 0)
+    	{
+    		pumpOff();
+    		home();
+    	}
+    	else
+    	{
+    		moveNozzel();
+    		pumpOn();
+    	}
+    	delay_ms(1500);
     }
     return E_SYS;   
 }
@@ -134,8 +163,8 @@ void readSensor1(void)
 		}
 	}
 
-	xMax1 = (int)(xMax1/count1);
-	yMax1 = (int)(yMax1/count1);
+	// xMax1 = (int)(xMax1/count1);
+	// yMax1 = (int)(yMax1/count1);
 
 	// EMBARC_PRINTF("%d ", maxTemper1);
 	// EMBARC_PRINTF("(%d, %d)\n", xMax1, yMax1);
@@ -149,6 +178,12 @@ void readSensor1(void)
 	// 	EMBARC_PRINTF("%d ", rcv_buf_0[i]);
 	// }
 	// EMBARC_PRINTF("\n\n");
+
+	for (int i = 0; i < 768; i++)
+	{
+		EMBARC_PRINTF("%d,", rcv_buf_0[i]);
+	}
+	EMBARC_PRINTF("\n");
 }
 
 void readSensor2(void)
@@ -171,7 +206,7 @@ void readSensor2(void)
 	}
 
 	maxTemper2 = rcv_buf_2[0];
-	xMax2 = 0; yMax1 = 0;
+	xMax2 = 0; yMax2 = 0;
 	uint8_t count2 = 1;
 
 	for (int i = 0; i < 768; i++)
@@ -204,18 +239,136 @@ void readSensor2(void)
 	// 	EMBARC_PRINTF("%d ", rcv_buf_2[i]);
 	// }
 	// EMBARC_PRINTF("\n\n");
+
+	// for (int i = 0; i < 768; i++)
+	// {
+	// 	EMBARC_PRINTF("%d,", rcv_buf_2[i]);
+	// }
+	// EMBARC_PRINTF("\n");
 }
 
 void flameLocation(void)
 {
-	alpha1 = PI*(11*(xMax1 - 16)/207360);
-	alpha2 = PI*(11*(xMax2 - 16)/207360);
-	beta2 = PI*(7*(yMax2 - 16)/864);
+	if (maxTemper1 < 40 || maxTemper2 < 40)
+	{
+		alpha1 = alpha2 = beta2 = fx = fy = 0;
+		return;
+	}
+	alpha1 = (xMax1 - 16)*(55/32);
+	alpha2 = (xMax2 - 16)*(55/32);
+	beta2 = (yMax2 - 12)*(35/24);
 
-	double y = (A*tan1(alpha1))/(2*tan1(alpha2));
-	fx = y*tan1(alpha2);
-	double yv = y/(cos1(alpha2));
-	fy = yv*tan1(beta2);
+	if (alpha1 >= 0 && alpha2 <= 0)
+	{
+		a1 = PI*(90 - alpha1)/180;
+		a2 = PI*(90 - fabs(alpha2))/180;
+		double x = ((A*tan1(a2))/(tan1(a1) + tan1(a2)));
+		// double y = A - x;
+		fx = (int)(x*tan1(a1));
+		fx = (int)(fx*tan1(PI*fx/180))/2;
+	}
+	else if (alpha1 >= 0 && alpha2 >= 0)
+	{
+		a1 = PI*(90 - alpha1)/180;
+		a2 = PI*(90 - alpha2)/180;
+		double x = ((A*tan1(a2))/(tan1(a2) - tan1(a1)));
+		// double y = x - A;
+		fx = (int)(x*tan1(a1));
+		fx = (int)fx/2;
+	}
+	else if (alpha1 <= 0 && alpha2 <= 0)
+	{
+		a1 = PI*(90 - fabs(alpha1))/180;
+		a2 = PI*(90 - fabs(alpha2))/180;
+		double x = ((A*tan1(a2))/(tan1(a2) - tan1(a1)));
+		// double y = x - A;
+		fx = (int)(x*tan1(a1));
+		fx = (int)-fx/2;
+	}
+
+	if (beta2 < 0)
+	{
+		fy = H - (int)(fx*tan1(PI*fabs(beta2)/180));
+		fy = (int)fy/2;
+	}
+	else
+	{
+		fy = H + (int)(fx*tan1(PI*fabs(beta2)/180));
+		fy = (int)fy/2;
+	}
+}
+
+void moveNozzel(void)
+{
+	float nozzelX, nozzelY;
+	if (fx == 0 || fy == 0)
+	{
+		return;
+	}
+	if (fy < Hn)
+	{
+		float h = sqrt1(pow1(fx - D, 2) + pow1(Hn - fy, 2));
+    	nozzelY = 180*asin1((Hn -fy)/h)/PI;
+    	nozzelY = 40 - nozzelY;
+    }
+    else if (fy > Hn)
+    {
+    	float h = sqrt1(pow1(fx - D, 2) + pow1(fy - Hn, 2));
+    	nozzelY = 180*asin1((fy - Hn)/h)/PI;
+    	nozzelY = 40 + nozzelY;
+    }
+    else
+    {
+    	nozzelY = 0;
+    }
+
+    if (a1 == a2)
+    {
+    	nozzelX = 0;
+    }
+    else if (a1 > a2)
+    {
+    	nozzelX = (90 - 180*a2/PI)/2;
+    	nozzelX = (90 - 2*nozzelX);
+    }
+    else
+    {
+    	nozzelX = (90 - 180*a1/PI)/2;
+    	nozzelX = (2*nozzelX + 90);
+    }
+    nozzelX = (int)(nozzelX - 4);
+    EMBARC_PRINTF("nozzelX: %d\n", (int)nozzelX);
+    EMBARC_PRINTF("nozzelY: %d\n", (int)nozzelY);
+
+    int stepX = nozzelX/0.1125;
+    int stepY = nozzelY/0.1125;
+    EMBARC_PRINTF("stepX: %d\n", stepX);
+    EMBARC_PRINTF("stepY: %d\n\n", stepY);
+    if (stepY > currentStepY)
+    {
+    	stepMotor(1, 0, stepY - currentStepY, 1500);
+    }
+    else if (stepY < currentStepY)
+    {
+    	stepMotor(1, 1, currentStepY - stepY, 1500);
+    }
+    currentStepY = stepY;
+    if (stepX > currentStepX)
+    {
+    	stepMotor(2, 0, stepX - currentStepX, 1500);
+    }
+    else if (stepX < currentStepX)
+    {
+    	stepMotor(2, 1, currentStepX - stepX, 1500);
+    }
+    currentStepX = stepX;
+}
+
+void home(void)
+{
+	stepMotor(2, 1, currentStepX, 1500);
+	stepMotor(1, 1, currentStepY, 1500);
+	currentStepX = currentStepY = 0;
 }
 
 void pumpOn(void)

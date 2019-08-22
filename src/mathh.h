@@ -88,7 +88,7 @@ double sin1(double x)
     {
         x*=-1;
         fl*=-1;
-    }//处理区间
+    }
     if(x>PI/4) return cos1(PI/2-x);
     else return fl*(x - pow1(x,3)/6 + pow1(x,5)/120 - pow1(x,7)/5040 +pow1(x,9)/362880);
 }
