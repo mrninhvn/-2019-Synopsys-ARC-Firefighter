@@ -1,0 +1,1 @@
+openocd -s C:\arc_gnu\share\openocd\scripts -c "gdb_port 49101" -f board\snps_em_sk_v2.3.cfg
